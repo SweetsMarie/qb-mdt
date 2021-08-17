@@ -204,7 +204,7 @@ const qb_mdt = new Vue({
                 }))
             } else {
                 $.post('https://qb-mdt/messageClient', JSON.stringify({
-                    typeMessage: 'inform',
+                    typeMessage: 'success',
                     message: 'Notes has been saved',
                 }))
                 $.post('https://qb-mdt/saveNotes', JSON.stringify({

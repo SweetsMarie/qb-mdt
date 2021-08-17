@@ -31,7 +31,7 @@ RegisterNUICallback('close', function(data)
 end)
 
 RegisterNUICallback('messageClient', function(data)
-    exports['mythic_notify']:SendAlert(data.typeMessage, data.message)
+    QBCore.Functions.Notify(data.message, data.typeMessage)
 end)
 
 -- Criminal records page
