@@ -670,7 +670,7 @@ p {
 
 .profile-image-wrapper {
     position: relative;
-    width: 200px;
+    width: 300px;
     height: 300px;
     margin-top: 10px;
     margin-right: auto;
@@ -681,7 +681,7 @@ p {
 }
 
 .profile-image-wrapper img {
-    width: 200px;
+    width: 300px;
     height: 300px;
     border-radius: 30%;
     box-shadow: 0px 0px 0px 2px black;
@@ -691,7 +691,7 @@ p {
 .profile-image-overlay {
     position: absolute;
     top: 0;
-    width: 200px;
+    width: 300px;
     height: 300px;
     opacity: 0;
     border-radius: 30%;
@@ -706,8 +706,8 @@ p {
 .profile-image-wrapper p {
     position: absolute;
     right: 0;
-    bottom: 0;
-    left: 5;
+    bottom: 30;
+    right: 105;
     top: 0;
     font-weight: 600;
     color: #DCDCDC;
