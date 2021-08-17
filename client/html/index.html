@@ -81,10 +81,10 @@
                                                             <td>{{onduty.charname}}</td>
                                                             <td>{{onduty.policegroup}}</td>
                                                             <td>{{onduty.badgenumber}}</td>
-                                                            <td v-if='onduty.duty == "On duty"'>{{onduty.duty}}
+                                                            <td v-if='onduty.duty == "true"'>{{ON DUTY}}
                                                                 <div class='duty-on'></div>
                                                             </td>
-                                                            <td v-else>{{onduty.duty}}
+                                                            <td v-else>{{OFF DUTY}}
                                                                 <div class='duty-off'></div>
                                                             </td>
                                                         </tr>
