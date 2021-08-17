@@ -75,6 +75,8 @@ const qb_mdt = new Vue({
             charname: '',
             dateofbirth: '',
             sex: '',
+            job: '',
+            gang: '',
             phone_number: '',
             height: '',
             note: '',
@@ -370,7 +372,7 @@ const qb_mdt = new Vue({
                     jailTime: this.showCurrentCharge.jailTime
                 }))
                 $.post('https://qb-mdt/messageClient', JSON.stringify({
-                    typeMessage: 'inform',
+                    typeMessage: 'success',
                     message: 'Changes have been saved',
                 }))
             } else {
@@ -474,7 +476,7 @@ const qb_mdt = new Vue({
         DeleteData(identifierData) {
             if (this.identifier === this.identifierData) {
                 $.post('https://qb-mdt/messageClient', JSON.stringify({
-                    typeMessage: 'inform',
+                    typeMessage: 'error',
                     message: 'You are admin, you cannot delete yourself',
                 }))
             } else {
