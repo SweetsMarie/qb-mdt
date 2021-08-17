@@ -19,6 +19,18 @@ function DrawText3D(x, y, z, text)
 end
 
 function Open()
+    QBCore.Functions.TriggerCallback('qb-mdt:server:getmdtinfo', function(playerinfo)
+        SetNuiFocus(true, true)
+        SendNUIMessage({
+            drxDispatches = drxDispatches,
+            drxWarrants = drxWarrants,
+            drxProfiles = playerinfo,
+            open = true,
+        })
+    end)
+end
+
+--[[ function Open()
     QBCore.Functions.TriggerCallback('drx_mdt:profiles', function(drxProfiles)
         QBCore.Functions.TriggerCallback('drx_mdt:characterProfiles', function(charProfiles)
             QBCore.Functions.TriggerCallback('drx_mdt:characterInfo', function(playerInfo)
@@ -52,7 +64,7 @@ function Open()
             end)
         end)
     end)
-end
+end ]]
 
 function Close()
     SetNuiFocus(false, false)

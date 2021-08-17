@@ -69,6 +69,25 @@ AddEventHandler('drx_mdt:RegisterAccess', function(src)
     end
 end)
 
+-- Main Callback
+QBCore.Functions.CreateCallback('qb-mdt:server:getmdtinfo', function(source, cb)
+    local src = source
+    local playerInfo = {}
+    local xPlayer = QBCore.Functions.GetPlayer(src)
+    if xPlayer ~= nil then
+        table.insert(playerInfo, {
+            identifier = xPlayer.PlayerData.citizenid,
+            rank = xPlayer.PlayerData.job.grade.name,
+            charname = xPlayer.PlayerData.charinfo.firstname.. ' '..xPlayer.PlayerData.charinfo.lastname,
+            policegroup = xPlayer.PlayerData.job.grade.name,
+            badgenumber = xPlayer.PlayerData.metadata.callsign,
+            duty = xPlayer.PlayerData.job.onduty,
+            image = '',
+        })
+        cb(playerInfo)
+    end
+end)
+
 -- Fetch Dispatch
 
 QBCore.Functions.CreateCallback('drx_mdt:fetchWarrants', function(source, cb)
