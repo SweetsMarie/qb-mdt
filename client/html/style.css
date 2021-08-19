@@ -676,7 +676,6 @@ p {
     margin-right: auto;
     margin-left: auto;
     border-radius: 30% !important;
-    box-shadow: 0px 0px 0px 1px rgb(26, 26, 26);
     transition: 100ms ease-in-out;
 }
 
@@ -684,7 +683,6 @@ p {
     width: 300px;
     height: 300px;
     border-radius: 30%;
-    box-shadow: 0px 0px 0px 2px black;
     filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.5));
 }
 

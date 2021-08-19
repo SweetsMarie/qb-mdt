@@ -9,20 +9,11 @@ RegisterCommand(Config.Command, function(source, args)
     for k,v in pairs(Config.Permission) do
         if xPlayer.PlayerData.job.name == v then
             TriggerClientEvent('drx_mdt:openMDT', src)
---[[             exports.ghmattimysql:execute('SELECT * FROM mdt_profiles WHERE identifier = @identifier', {
-                ['@identifier'] = xPlayer.PlayerData.citizenid
-            }, function(result)
-                if result[1] == nil then
-                    TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'inform', text = Config.Notifications.Register, length = '5000', style = {}})
-                else
-                    TriggerClientEvent('drx_mdt:openMDT', src)
-                end
-            end) ]]
         end
     end
 end)
 
-RegisterCommand(Config.RegisterCommand, function(source, args)
+--[[ RegisterCommand(Config.RegisterCommand, function(source, args) -- NOT USED ATM
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
     for k,v in pairs(Config.Permission) do
@@ -33,7 +24,7 @@ RegisterCommand(Config.RegisterCommand, function(source, args)
 end)
 
 -- If police has no information, then assign it to mdt_profiles
-RegisterServerEvent('drx_mdt:RegisterAccess')
+RegisterServerEvent('drx_mdt:RegisterAccess') -- NOT USED ATM
 AddEventHandler('drx_mdt:RegisterAccess', function(src)
     local src = src
     local xPlayer = QBCore.Functions.GetPlayer(src)
@@ -67,10 +58,10 @@ AddEventHandler('drx_mdt:RegisterAccess', function(src)
             end)
         end
     end
-end)
+end) ]]
 
 -- Main Callback
-QBCore.Functions.CreateCallback('qb-mdt:server:getmdtinfo', function(source, cb)
+QBCore.Functions.CreateCallback('qb-mdt:server:getmdtinfo', function(source, cb) -- NEW EVENT
     local src = source
     local playerInfo = {}
     local xPlayer = QBCore.Functions.GetPlayer(src)
@@ -84,7 +75,6 @@ QBCore.Functions.CreateCallback('qb-mdt:server:getmdtinfo', function(source, cb)
             duty = tostring(xPlayer.PlayerData.job.onduty),
             phone = xPlayer.PlayerData.charinfo.phone,
             dateofbirth = xPlayer.PlayerData.charinfo.birthdate,
-            image = '',
         })
         cb(playerInfo)
     end
@@ -105,12 +95,12 @@ QBCore.Functions.CreateCallback('drx_mdt:fetchDispatch', function(source, cb)
 end)
 
 -- Fetching mdt_profiles
-QBCore.Functions.CreateCallback('drx_mdt:profiles', function(source, cb)
+--[[ QBCore.Functions.CreateCallback('drx_mdt:profiles', function(source, cb) -- NOT USED ATM
     local drxProfiles = exports.ghmattimysql:executeSync('SELECT * FROM mdt_profiles')
     cb(drxProfiles)
 end)
 
-QBCore.Functions.CreateCallback('drx_mdt:characterProfiles', function(source, cb)
+QBCore.Functions.CreateCallback('drx_mdt:characterProfiles', function(source, cb) -- NOT USED ATM
     local src = source
     local charProfiles = {}
     local xPlayer = QBCore.Functions.GetPlayer(src)
@@ -129,7 +119,7 @@ QBCore.Functions.CreateCallback('drx_mdt:characterProfiles', function(source, cb
 end)
 
 -- Fetching users
-QBCore.Functions.CreateCallback('drx_mdt:characterInfo', function(source, cb)
+QBCore.Functions.CreateCallback('drx_mdt:characterInfo', function(source, cb) -- NOT USED ATM
     local src = source
     local playerInfo = {}
     local xPlayer = QBCore.Functions.GetPlayer(src)
@@ -143,10 +133,10 @@ QBCore.Functions.CreateCallback('drx_mdt:characterInfo', function(source, cb)
         end
         cb(playerInfo)
     end
-end)
+end) ]]
 
 --## CRIMINAL RECORDS PAGE ##--
-RegisterServerEvent('drx_mdt:searchPerson')
+RegisterServerEvent('drx_mdt:searchPerson') -- DONE
 AddEventHandler('drx_mdt:searchPerson', function(searchInput)
     local src = source
     local searchResults = {}
@@ -161,7 +151,7 @@ AddEventHandler('drx_mdt:searchPerson', function(searchInput)
     TriggerClientEvent('drx_mdt:returnSearchPerson', src, searchResults)
 end)
 
-RegisterServerEvent('drx_mdt:fetchSelectPerson')
+RegisterServerEvent('drx_mdt:fetchSelectPerson') -- DONE
 AddEventHandler('drx_mdt:fetchSelectPerson', function(data)
     local src = source
     local gender = 'm'
@@ -180,23 +170,23 @@ AddEventHandler('drx_mdt:fetchSelectPerson', function(data)
     end
 end)
 
-RegisterServerEvent('drx_mdt:uploadPersonImage')
+--[[ RegisterServerEvent('drx_mdt:uploadPersonImage') -- NOT USED ATM
 AddEventHandler('drx_mdt:uploadPersonImage', function(identifier, image)
     exports.ghmattimysql:execute('UPDATE users SET image = @image WHERE identifier = @identifier', {
         ['@identifier'] = identifier,
         ['@image'] = image
     })
-end)
+end) ]]
 
-RegisterServerEvent('drx_mdt:saveNotes')
+--[[ RegisterServerEvent('drx_mdt:saveNotes') -- NOT USED ATM
 AddEventHandler('drx_mdt:saveNotes', function(identifier, note)
     exports.ghmattimysql:execute('UPDATE users SET note = @note WHERE identifier = @identifier', {
         ['@identifier'] = identifier,
         ['@note'] = note
     })
-end)
+end) ]]
 
-RegisterServerEvent('drx_mdt:fetchLicenses')
+RegisterServerEvent('drx_mdt:fetchLicenses') -- WIP TO DISPLAY ALL
 AddEventHandler('drx_mdt:fetchLicenses', function(data)
     local src = source
     local result = exports.ghmattimysql:executeSync('SELECT metadata FROM players WHERE citizenid=@citizenid', {['@citizenid'] = data.identifier})
@@ -208,16 +198,22 @@ AddEventHandler('drx_mdt:fetchLicenses', function(data)
     end
 end)
 
-RegisterServerEvent('drx_mdt:removeLicenses')
+RegisterServerEvent('drx_mdt:removeLicenses') -- DONE
 AddEventHandler('drx_mdt:removeLicenses', function(data)
     local src = source
-    exports.ghmattimysql:execute('DELETE FROM user_licenses WHERE type = @type AND owner = @owner', {
-        ['@type'] = data.licenseType,
-        ['@owner'] = data.identifier
-    })
+    local result = exports.ghmattimysql:executeSync('SELECT metadata FROM players WHERE citizenid=@citizenid', {['@citizenid'] = data.identifier})
+    for k,v in pairs(result) do
+        if v.metadata then
+            local metadata = json.decode(v.metadata)
+            if metadata.licences[data.licenseType] == true then
+                metadata.licences[data.licenseType] = false
+                exports.ghmattimysql:execute('UPDATE players SET metadata=@metadata', {['@metadata'] = json.encode(metadata)})
+            end
+        end
+    end
 end)
 
-RegisterServerEvent('drx_mdt:markPersonWanted')
+--[[ RegisterServerEvent('drx_mdt:markPersonWanted') -- NOT USED ATM
 AddEventHandler('drx_mdt:markPersonWanted', function(data)
     local src = source
     if data.wanted == 'No' then
@@ -237,13 +233,12 @@ AddEventHandler('drx_mdt:markPersonWanted', function(data)
     }, function(v)
         TriggerClientEvent('drx_mdt:returnWantedStatus', src, v[1].wanted)
     end)
-end)
+end) ]]
 
-RegisterServerEvent('drx_mdt:newCharge')
+RegisterServerEvent('drx_mdt:newCharge') -- DONE
 AddEventHandler('drx_mdt:newCharge', function(data)
     local src = source
     data.jailTime = tonumber(data.jailTime)
-    TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'inform', text = Config.Notifications.newCharge.. ' ' ..data.victim.. ' ' ..Config.Notifications.newCharge2, length = '5000', style = {}})
     exports.ghmattimysql:execute('INSERT INTO mdt_charges (identifier, title, incident, victim, author, charges, fine, jailTime, date) VALUES (@identifier, @title, @incident, @victim, @author, @charges, @fine, @jailTime, @date)', {
         ['@identifier'] = data.identifier,
 		['@title'] = data.title,
@@ -257,7 +252,7 @@ AddEventHandler('drx_mdt:newCharge', function(data)
     })
 end)
 
-RegisterServerEvent('drx_mdt:fetchCharges')
+RegisterServerEvent('drx_mdt:fetchCharges') -- DONE
 AddEventHandler('drx_mdt:fetchCharges', function(identifier)
     local src = source
     
@@ -275,7 +270,7 @@ AddEventHandler('drx_mdt:fetchCharges', function(identifier)
 	end)
 end)
 
-RegisterServerEvent('drx_mdt:sentenceTarget')
+--[[ RegisterServerEvent('drx_mdt:sentenceTarget') -- WIP
 AddEventHandler('drx_mdt:sentenceTarget', function(data)
     local src = source
     if QBCore.Functions.GetPlayerentifier(data.identifier) then
@@ -306,9 +301,9 @@ AddEventHandler('drx_mdt:sentenceTarget', function(data)
     else
         TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'error', text = Config.Notifications.NotOnline, length = '5000', style = {}})
     end
-end)
+end) ]]
 
-RegisterServerEvent('drx_mdt:deleteCharge')
+RegisterServerEvent('drx_mdt:deleteCharge') -- DONE?
 AddEventHandler('drx_mdt:deleteCharge', function(data)
     local src = source
     data.id = tonumber(data.id)
@@ -318,7 +313,7 @@ AddEventHandler('drx_mdt:deleteCharge', function(data)
     TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'success', text = Config.Notifications.ChargeDeleted, length = '5000', style = {}})
 end)
 
-RegisterServerEvent('drx_mdt:editCharge')
+RegisterServerEvent('drx_mdt:editCharge') -- DONE
 AddEventHandler('drx_mdt:editCharge', function(data)
     local src = source
     data.id = tonumber(data.id)
@@ -333,11 +328,10 @@ end)
 --## CRIMINAL RECORDS PAGE ##--
 
 --## SEARCH VEHICLE PAGE ##--
-RegisterServerEvent('drx_mdt:searchVehicle')
+RegisterServerEvent('drx_mdt:searchVehicle') -- DONE
 AddEventHandler('drx_mdt:searchVehicle', function(searchVehicle)
     local src = source
-
-    exports.ghmattimysql:execute('SELECT * FROM owned_vehicles WHERE LOWER(plate) LIKE @searchVehicle', {
+    exports.ghmattimysql:execute('SELECT * FROM player_vehicles WHERE LOWER(plate) LIKE @searchVehicle', {
 		['@searchVehicle'] = string.lower('%'..searchVehicle..'%')
 	}, function(result)
         local VehicleResults = {}
@@ -352,31 +346,27 @@ end)
 RegisterServerEvent('drx_mdt:fetchSelectVehicle')
 AddEventHandler('drx_mdt:fetchSelectVehicle', function(data)
     local src = source
+    local result = exports.ghmattimysql:executeSync('SELECT charinfo FROM players WHERE citizenid=@citizenid', {['@citizenid'] = data.owner})
+    for k,v in pairs(result) do
+        if v.charinfo then
+            local charinfo = json.decode(v.charinfo)
+            charname = charinfo.firstname.. ' ' ..charinfo.lastname
+        end
+    end
 
-    exports.ghmattimysql:execute('SELECT firstname, lastname FROM users WHERE identifier = @identifier', {
-        ['@identifier'] = data.owner
-    }, function(result)
-        local charname = result[1].firstname.. ' ' ..result[1].lastname
-
-        exports.ghmattimysql:execute('SELECT * FROM owned_vehicles WHERE owner = @owner AND plate = @plate', {
-            ['@owner'] = data.owner,
-            ['@plate'] = data.plate
-        }, function(vehicleData)
-
-            for k,v in pairs(vehicleData) do
-                local Colors = Config.Colors
-                local data = json.decode(v.vehicle)
-                modelHash = data.model
-                if data.color1 then
-                    color = Colors[tostring(data.color1)]
-                    if Colors[tostring(data.color2)] then
-                        color = Colors[tostring(data.color2)] .. ' on ' .. Colors[tostring(data.color1)]
-                    end
-                end
+    local vehicleData = exports.ghmattimysql:executeSync('SELECT * FROM player_vehicles WHERE citizenid=@citizenid AND plate=@plate', {['@citizenid'] = data.owner, ['@plate'] = data.plate})
+    for k,v in pairs(vehicleData) do
+        local Colors = Config.Colors
+        local data = json.decode(vehicleData[1].mods)
+        modelHash = GetHashKey(vehicleData[1].vehicle)
+        if data.color1 then
+            color = Colors[tostring(data.color1)]
+            if Colors[tostring(data.color2)] then
+                color = Colors[tostring(data.color2)] .. ' on ' .. Colors[tostring(data.color1)]
             end
-            TriggerClientEvent('drx_mdt:returnSelectVehicle', src, charname, modelHash, vehicleData[1].plate, vehicleData[1].type, color, vehicleData[1].stolen, vehicleData[1].image)
-        end)
-    end)
+        end
+    end
+    TriggerClientEvent('drx_mdt:returnSelectVehicle', src, charname, modelHash, vehicleData[1].plate, 'Vehicle', color, '', '')
 end)
 
 RegisterServerEvent('drx_mdt:changeVehicleImage')
@@ -422,7 +412,7 @@ end)
 
 --## PROFILE PAGE ##--
 -- Change duty on self at mdt_profiles
-RegisterServerEvent('drx_mdt:changeDuty')
+RegisterServerEvent('drx_mdt:changeDuty') -- DONE ?
 AddEventHandler('drx_mdt:changeDuty', function(duty)
     local src = source
     if duty == 'TRUE' then
@@ -432,34 +422,10 @@ AddEventHandler('drx_mdt:changeDuty', function(duty)
         TriggerClientEvent('drx_mdt:updateDutyAll', src)
         TriggerClientEvent('drx_mdt:updateDuty', src, 'TRUE')
     end
-    --[[local xPlayer = QBCore.Functions.GetPlayer(src)
-    if duty == 'Off duty' then
-        exports.ghmattimysql:execute('UPDATE mdt_profiles SET duty = @duty WHERE identifier = @identifier', {
-            ['@identifier'] = xPlayer.PlayerData.citizenid,
-            ['@duty'] = 'On duty'
-        })
-        local users = QBCore.Functions.GetPlayers()
-        for k,v in pairs(users) do
-            local xPlayers = QBCore.Functions.GetPlayer(v)
-            if xPlayers.getGroup(Config.Permission) then
-                TriggerClientEvent('drx_mdt:updateDutyAll', v)
-            end
-        end
-        TriggerClientEvent('drx_mdt:updateDuty', src, 'On duty')
-        TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'inform', text = Config.Notifications.OnDuty, length = '5000', style = {}})
-    elseif duty == 'On duty' then
-        exports.ghmattimysql:execute('UPDATE mdt_profiles SET duty = @duty WHERE identifier = @identifier', {
-            ['@identifier'] = xPlayer.PlayerData.citizenid,
-            ['@duty'] = 'Off duty'
-        })
-        TriggerClientEvent('drx_mdt:updateDutyAll', src)
-        TriggerClientEvent('drx_mdt:updateDuty', src, 'Off duty')
-        TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'inform', text = Config.Notifications.OffDuty, length = '5000', style = {}})
-    end ]]
 end)
 
 -- Change image on self at mdt_profiles
-RegisterServerEvent('drx_mdt:changeImage')
+--[[ RegisterServerEvent('drx_mdt:changeImage') -- NOT USED ATM
 AddEventHandler('drx_mdt:changeImage', function(image)
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
@@ -472,11 +438,11 @@ AddEventHandler('drx_mdt:changeImage', function(image)
     else
         TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'error', text = Config.Notifications.NoLink, length = '5000', style = {}})
     end
-end)
+end) ]]
 
 
 -- Admin comit data to another user into mdt_profiles
-RegisterServerEvent('drx_mdt:changeComitData')
+--[[ RegisterServerEvent('drx_mdt:changeComitData') -- NOT USED ATM
 AddEventHandler('drx_mdt:changeComitData', function(identifierData, rankData, policegroupData, badgenumberData, imageData)
     local src = source
     local xPlayer = QBCore.Functions.GetPlayer(src)
@@ -498,11 +464,11 @@ AddEventHandler('drx_mdt:changeComitData', function(identifierData, rankData, po
             end
         end
     end)
-end)
+end) ]]
 
 
 -- Admin delete user from database
-RegisterServerEvent('drx_mdt:deleteData')
+--[[ RegisterServerEvent('drx_mdt:deleteData') -- NOT USED ATM
 AddEventHandler('drx_mdt:deleteData', function(identifierData)
     local src = source
     xPlayer = tonumber(identifierData)
@@ -512,5 +478,5 @@ AddEventHandler('drx_mdt:deleteData', function(identifierData)
     })
     TriggerClientEvent('drx_mdt:updateDutyAll', src)
     TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'inform', text = Config.Notifications.DataDeleted, length = '5000', style = {}})
-end)
+end) ]]
 --## PROFILE PAGE ##--

@@ -208,7 +208,7 @@
                                             <v-btn elevation='0' class='sv-search-clear-btn' small @click='searchVehicleClear()'>CLEAR</v-btn>
                                             <div class='sv-search-result'>
                                                 <template v-for='sr in VehicleResults'>
-                                                <v-btn @click='selectVehicle(sr.owner, sr.plate)' elevation='5' plain tile>
+                                                <v-btn @click='selectVehicle(sr.citizenid, sr.plate)' elevation='5' plain tile>
                                                     <p>{{sr.plate}}</p>
                                                 </v-btn>
                                             </template>
@@ -229,7 +229,7 @@
                                         <div class='profile-user'>
 
                                             <div class='profile-image-wrapper'>
-                                                <img src='images/nostaff.png'>
+                                                <img src='images/policeEmblem.png'>
                                                 <div class='profile-image-overlay'>
                                                     <div class='profile-image-text-box' @click='imageChange = !imageChange'>
                                                         <p class='profile-image-text'>Change image</p>
@@ -547,7 +547,7 @@
                                             </v-btn> | DMV passed
                                         </v-chip>
                                         <v-chip label v-if='UserLicenses.driver == true'>
-                                            <v-btn small icon @click='removeLicense("drive")'>
+                                            <v-btn small icon @click='removeLicense("driver")'>
                                                 <v-icon>fas fa-ban</v-icon>
                                             </v-btn> | Driver's license
                                         </v-chip>

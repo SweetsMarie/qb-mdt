@@ -156,15 +156,16 @@ AddEventHandler('drx_mdt:returnSearchVehicle', function(VehicleResults)
     })
 end)
 
-RegisterNetEvent('drx_mdt:returnSelectVehicle')
+RegisterNetEvent('drx_mdt:returnSelectVehicle') -- DONE besides stolen & image
 AddEventHandler('drx_mdt:returnSelectVehicle', function(charname, modelHash, plate, type, color, stolen, image)
     local model = GetDisplayNameFromVehicleModel(modelHash)
+    local type = QBCore.Shared.Vehicles[string.lower(model)]["category"]
     SendNUIMessage({
         update = 'returnSelectVehicle',
         charname = charname,
         model = model,
         plate = plate,
-        type = type,
+        type = string.upper(type),
         color = color,
         stolen = stolen,
         image = image
