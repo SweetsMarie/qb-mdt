@@ -69,7 +69,7 @@
                                                                 <h2>POSITION</h2>
                                                             </th>
                                                             <th>
-                                                                <h2>BADGE NUMBER</h2>
+                                                                <h2>CALLSIGN</h2>
                                                             </th>
                                                             <th>
                                                                 <h2>DUTY STATUS</h2>
@@ -81,10 +81,10 @@
                                                             <td>{{onduty.charname}}</td>
                                                             <td>{{onduty.policegroup}}</td>
                                                             <td>{{onduty.badgenumber}}</td>
-                                                            <td v-if='onduty.duty == "true"'>{{ON DUTY}}
+                                                            <td v-if='onduty.duty == "true"'>ON DUTY
                                                                 <div class='duty-on'></div>
                                                             </td>
-                                                            <td v-else>{{OFF DUTY}}
+                                                            <td v-else>OFF DUTY
                                                                 <div class='duty-off'></div>
                                                             </td>
                                                         </tr>
@@ -238,15 +238,15 @@
                                             </div>
 
                                             <v-divider></v-divider>
-                                            <p>Welcome {{vrpcharname}}</p>
+                                            <p>Welcome, {{vrpcharname}}</p>
                                             <p>Phone number: {{phone_number}}</p>
                                             <p>Date of birth: {{dateofbirth}}</p>
                                             <v-divider></v-divider>
                                             <p>Position: {{policegroup}}</p>
-                                            <p>Badge number: {{badgenumber}}</p>
+                                            <p>Callsign: {{badgenumber}}</p>
                                             <p>Duty status: {{duty}}</p>
                                             <v-divider></v-divider>
-                                            <template v-if='duty == "On duty"'>
+                                            <template v-if='duty == "TRUE"'>
                                                 <v-btn elevation='5' @click='dutyStatus(duty)' class='profile-user-dutyoff-btn'>Go off duty</v-btn>
                                             </template>
                                             <template v-else>
@@ -254,7 +254,7 @@
                                             </template>
                                         </div>
 
-                                        <template v-if='rank == "admin"'>
+                                        <template v-if='rank == "true"'>
                                             <h3 class='profile-title'>Employees of LSPD</h3>
                                             <div class='profile-box'>
                                                 <div class='profile-management'>
@@ -280,7 +280,7 @@
                                                                 <h2>POSITION</h2>
                                                             </th>
                                                             <th>
-                                                                <h2>BADGE NUMBER</h2>
+                                                                <h2>CALLSIGN</h2>
                                                             </th>
                                                             <th>
                                                                 <h2>DUTY STATUS</h2>
@@ -292,10 +292,10 @@
                                                             <td>{{onduty.charname}}</td>
                                                             <td>{{onduty.policegroup}}</td>
                                                             <td>{{onduty.badgenumber}}</td>
-                                                            <td v-if='onduty.duty == "On duty"'>{{onduty.duty}}
+                                                            <td v-if='onduty.duty == "true"'>ON DUTY
                                                                 <div class='profile-duty-on'></div>
                                                             </td>
-                                                            <td v-else>{{onduty.duty}}
+                                                            <td v-else>OFF DUTY
                                                                 <div class='profile-duty-off'></div>
                                                             </td>
                                                         </tr>

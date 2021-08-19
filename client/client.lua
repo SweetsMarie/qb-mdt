@@ -182,6 +182,7 @@ end)
 -- Profile page
 RegisterNUICallback('dutyStatus', function(data)
     TriggerServerEvent('drx_mdt:changeDuty', data.duty)
+    TriggerServerEvent('QBCore:ToggleDuty')
 end)
 
 RegisterNUICallback('changeImage', function(data)
@@ -206,7 +207,7 @@ end)
 
 RegisterNetEvent('drx_mdt:updateDutyAll')
 AddEventHandler('drx_mdt:updateDutyAll', function(drxProfiles)
-    QBCore.Functions.TriggerCallback('drx_mdt:profiles', function(drxProfiles)
+    QBCore.Functions.TriggerCallback('qb-mdt:server:getmdtinfo', function(drxProfiles)
         SendNUIMessage({
             type = 'updateDutyAll',
             drxProfiles = drxProfiles

@@ -77,11 +77,13 @@ QBCore.Functions.CreateCallback('qb-mdt:server:getmdtinfo', function(source, cb)
     if xPlayer ~= nil then
         table.insert(playerInfo, {
             identifier = xPlayer.PlayerData.citizenid,
-            rank = xPlayer.PlayerData.job.grade.name,
+            rank = xPlayer.PlayerData.job.isboss,
             charname = xPlayer.PlayerData.charinfo.firstname.. ' '..xPlayer.PlayerData.charinfo.lastname,
             policegroup = xPlayer.PlayerData.job.grade.name,
             badgenumber = xPlayer.PlayerData.metadata.callsign,
-            duty = xPlayer.PlayerData.job.onduty,
+            duty = tostring(xPlayer.PlayerData.job.onduty),
+            phone = xPlayer.PlayerData.charinfo.phone,
+            dateofbirth = xPlayer.PlayerData.charinfo.birthdate,
             image = '',
         })
         cb(playerInfo)
@@ -112,22 +114,18 @@ QBCore.Functions.CreateCallback('drx_mdt:characterProfiles', function(source, cb
     local src = source
     local charProfiles = {}
     local xPlayer = QBCore.Functions.GetPlayer(src)
-    local result = exports.ghmattimysql:executeSync('SELECT * FROM mdt_profiles WHERE identifier=@identifier', {['@identifier'] = xPlayer.PlayerData.citizenid})
-    if (result[1] ~= nil) then
-        for i=1, #result, 1 do
-            table.insert(charProfiles, {
-                identifier = result[i].identifier,
-                rank = result[i].rank,
-                charname = result[i].charname,
-                policegroup = result[1].policegroup,
-                badgenumber = result[i].badgenumber,
-                duty = result[i].duty,
-                image = result[i].image,
-            })
-        end
+    if xPlayer ~= nil then
+        table.insert(charProfiles, {
+            identifier = xPlayer.PlayerData.citizenid,
+            rank = xPlayer.PlayerData.job.grade.name,
+            charname = xPlayer.PlayerData.charinfo.firstname.. ' '..xPlayer.PlayerData.charinfo.lastname,
+            policegroup = xPlayer.PlayerData.job.grade.name,
+            badgenumber = xPlayer.PlayerData.metadata.callsign,
+            duty = xPlayer.PlayerData.job.onduty,
+            image = '',
+        })
         cb(charProfiles)
     end
-    cb(charProfiles)
 end)
 
 -- Fetching users
@@ -427,8 +425,14 @@ end)
 RegisterServerEvent('drx_mdt:changeDuty')
 AddEventHandler('drx_mdt:changeDuty', function(duty)
     local src = source
-    local xPlayer = QBCore.Functions.GetPlayer(src)
-
+    if duty == 'TRUE' then
+        TriggerClientEvent('drx_mdt:updateDutyAll', src)
+        TriggerClientEvent('drx_mdt:updateDuty', src, 'FALSE')
+    else
+        TriggerClientEvent('drx_mdt:updateDutyAll', src)
+        TriggerClientEvent('drx_mdt:updateDuty', src, 'TRUE')
+    end
+    --[[local xPlayer = QBCore.Functions.GetPlayer(src)
     if duty == 'Off duty' then
         exports.ghmattimysql:execute('UPDATE mdt_profiles SET duty = @duty WHERE identifier = @identifier', {
             ['@identifier'] = xPlayer.PlayerData.citizenid,
@@ -451,7 +455,7 @@ AddEventHandler('drx_mdt:changeDuty', function(duty)
         TriggerClientEvent('drx_mdt:updateDutyAll', src)
         TriggerClientEvent('drx_mdt:updateDuty', src, 'Off duty')
         TriggerClientEvent('mythic_notify:client:SendAlert', src, { type = 'inform', text = Config.Notifications.OffDuty, length = '5000', style = {}})
-    end
+    end ]]
 end)
 
 -- Change image on self at mdt_profiles

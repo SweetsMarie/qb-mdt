@@ -21,17 +21,23 @@ end
 function Open()
     QBCore.Functions.TriggerCallback('qb-mdt:server:getmdtinfo', function(playerinfo)
         SetNuiFocus(true, true)
+        print(playerinfo[1].rank)
         SendNUIMessage({
             drxDispatches = drxDispatches,
             drxWarrants = drxWarrants,
             drxProfiles = playerinfo,
+            vrpcharname = playerinfo[1].charname,
+            phone_number = playerinfo[1].phone,
+            dateofbirth = playerinfo[1].dateofbirth,
+            policegroup = playerinfo[1].policegroup,
+            badgenumber = playerinfo[1].badgenumber,
+            duty = string.upper(playerinfo[1].duty),
+            rank = playerinfo[1].rank,
             open = true,
         })
     end)
 end
-
---[[ function Open()
-    QBCore.Functions.TriggerCallback('drx_mdt:profiles', function(drxProfiles)
+--[[     QBCore.Functions.TriggerCallback('drx_mdt:profiles', function(drxProfiles)
         QBCore.Functions.TriggerCallback('drx_mdt:characterProfiles', function(charProfiles)
             QBCore.Functions.TriggerCallback('drx_mdt:characterInfo', function(playerInfo)
                 QBCore.Functions.TriggerCallback('drx_mdt:fetchDispatch', function(drxDispatches)
@@ -48,15 +54,16 @@ end
                             -- drx_mdt_warrants
                             drxWarrants = drxWarrants,
                             -- mdt_profiles
-                            drxProfiles = drxProfiles,
+                            --drxProfiles = drxProfiles,
+                            drxProfiles = charProfiles,
                             -- char profiles
-                            identifier = 'test',
-                            charname = 'josh',
-                            policegroup = 'boss',
-                            rank = '4',
-                            badgenumber = 'test',
-                            duty = 'on',
-                            image = '',
+                            identifier = charProfiles[1].identifier,
+                            charname = charProfiles[1].charname,
+                            policegroup = charProfiles[1].policegroup,
+                            rank = charProfiles[1].rank,
+                            badgenumber = charProfiles[1].badgenumber,
+                            duty = charProfiles[1].duty,
+                            image = charProfiles[1].image,
                             open = true,
                         })
                     end)
